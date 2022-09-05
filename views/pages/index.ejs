@@ -1,0 +1,16 @@
+<HTML>
+    <HEAD>
+        <SCRIPT>
+        </SCRIPT>
+    </HEAD>
+    <BODY>
+        <div class="container">
+            <% for (var i =1; i <songs.length;  i++ ) { %>
+                <div class="songitem">
+                    <% let item = songs[i] %>
+                    <a href="song?id=<%=item.id%>"><%=item.title%></a>
+                </div>
+            <% } %>
+        </div>
+    </BODY>
+</HTML>
