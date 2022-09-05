@@ -42,7 +42,16 @@ express()
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
+  .get('/', (req, res) => {
+    
+    connection.query("SELECT * FROM DATA", (err, rows, fields) => {
+        if(err){
+          
+        }else{
+          res.render('pages/index',{data:rows.recordset});
+        }
+    })
+   })
   .get('/api',async (request, response) => {
     try{
       const data = await getData(request.query.codice);

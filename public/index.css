@@ -1,0 +1,123 @@
+body{
+    margin:0px;
+    background-color: #b4ca65;
+    font-size:20px;
+    font-family: sans-serif;
+}
+
+.logo img{
+    display: block;
+    margin:auto;
+    width:20rem;
+}
+
+.page-header{
+    background-color: #90a93a;
+}
+.page-header{
+    text-align: center;
+    font-size: 5rem;
+    font-family: sans-serif;
+    margin: 0;
+}
+header{
+    background-color: white;
+}
+header::after{
+    box-shadow: 0px -3px 4px 4px #b4ca65;
+    content: '';
+    width: 100%;
+    /* height: 0.5rem; */
+    display: block;
+}
+
+.container{
+    width: 100%;
+    padding: 5rem 10rem;
+    
+    margin:auto;
+    box-sizing: border-box;
+}
+td{
+    border-bottom : 1px solid black
+}
+table{
+    font-size:20px;
+    width:100%;
+    background-color: rgb(236, 236, 236);
+}
+thead{
+    font-size:25px;
+    text-align:center;
+    font-variant:small-caps;
+    background-color: darkslategrey;
+    color:white
+}
+tbody td{
+    padding:5px;
+}
+.modal{
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 40rem;
+    /* height: 20rem; */
+    margin-left: calc(50% - 18rem);
+    z-index: 1051;
+    top: 13rem;
+}
+.modal-blur{
+    
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+    background-color: #ffffff78;
+    
+}
+
+.modal-header{
+    border-bottom: 1px solid #9e9e9e;
+    padding: 1.7rem;
+    text-align: center;
+    font-size: 35px;
+}
+.modal-body{
+    padding: 2rem;
+}
+.modal-close{
+    float:right;
+    border:none;
+    background-color: transparent;
+    font-size:40px;
+    cursor: pointer;
+}
+.modal-footer{
+    padding: 1rem;
+    float: right;
+}
+button{
+    background-color: #90a93a;
+    padding: 5px 15px;
+    border-radius: 3px;
+    font-size: 18px;
+    box-shadow: 1px 1px 5px 0px grey;
+}
+
+.form-group{
+    display: flex;
+    flex-direction: column;
+    margin-top: 5px;;
+}
+input{
+    border: none;
+    border-bottom: 1px solid gray;
+    font-size: 20px;
+    width:90%;
+    font-style: italic;
+}

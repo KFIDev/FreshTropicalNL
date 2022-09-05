@@ -1,16 +1,201 @@
 <HTML>
-    <HEAD>
+    <HEAD><link rel="stylesheet" href="/index.css" type="text/css" >
         <SCRIPT>
+            
+            async function edit(codice) {
+                document.getElementById("modal").style.display = "block"
+                document.querySelector(".modal-blur").style.display = "block"
+                let item = await fetch("/api?codice="+codice);
+                let objar = await item.json();
+                let obj = objar[0];
+                for(let field in obj){
+                    let selector = `form input[name='${field.toLowerCase()}']`;
+                    document.querySelector(selector).value = obj[field];
+                }
+            }
+            function closeModal(){
+                document.getElementById("modal").style.display = "none"
+                document.querySelector(".modal-blur").style.display = "none"
+            }
         </SCRIPT>
     </HEAD>
     <BODY>
+        <%- include('../menu.ejs'); %>
+        <h2 class="page-header">
+            Articoli
+        </h2>
         <div class="container">
-            <% for (var i =1; i <songs.length;  i++ ) { %>
-                <div class="songitem">
-                    <% let item = songs[i] %>
-                    <a href="song?id=<%=item.id%>"><%=item.title%></a>
-                </div>
-            <% } %>
+            <button style="float:right">New</button>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Codice</td>
+                        <td>Descrizione</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (var i =0; i <data.length;  i++ ) { %>
+                        <tr class="songitem">
+                            <% let item = data[i] %>
+                            <td><%=item.CODICE%></td>
+                            <td><%=item.DESCRIZIONE%></td>
+                            <td style="margin:auto"><button onclick="edit('<%=item.CODICE%>')">Edit</button><button>Delete</button></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <div  class="modal-blur" style="display:none;">
+            
+        </div>
+        <div id="modal" class="modal" style="display:none;">
+            <div class="modal-header">
+                Titolo
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="modal-form">
+                    <div style="display: flex;flex-direction: row;">
+                        <div>
+                            <div class="form-group">
+                                <label>Codice</label>
+                                <input name = "codice" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Nome</label>
+                                <input name = "nome" type="text">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>descrizione</label>
+                                <input name = "descrizione" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>origine</label>
+                                <input name = "origine" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>KJ</label>
+                                <input name = "kj" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Energia</label>
+                                <input name = "energia" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Grassi</label>
+                                <input name = "grassi" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Di cui saturi</label>
+                                <input name = "grassi_saturi" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Carboidrati</label>
+                                <input name = "carboidrati" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Di cui zuccheri</label>
+                                <input name = "carboidrati_zuccheri" type="text">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label>Fibra alimentare</label>
+                                <input name = "fibra_alimentare" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Proteine</label>
+                                <input name = "proteine" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Sale</label>
+                                <input name = "sale" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Sodio</label>
+                                <input name = "sodio" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Tmc</label>
+                                <input name = "tmc" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Avvisi</label>
+                                <input name = "avvisi" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Peso</label>
+                                <input name = "peso" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Txt</label>
+                                <input name = "txt" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Cpnp</label>
+                                <input name = "cpnp" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Società</label>
+                                <input name = "societa" type="text">
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label>Distribuito</label>
+                                <input name = "distrubuito" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Stampante</label>
+                                <input name = "stampante" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Doc</label>
+                                <input name = "doc" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Btw</label>
+                                <input name = "btw" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Flag stampa etichetta</label>
+                                <input name = "flag_stampa_etichetta" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Ordine</label>
+                                <input name = "ordine" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo L</label>
+                                <input name = "tipol" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Numero etichetta</label>
+                                <input name = "num_etich" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Stampa manuale</label>
+                                <input name = "print_man" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Check</label>
+                                <input name = "check" type="text">
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group">
+                        <label>Ingredienti</label>
+                        <textarea rows="4" name = "ingredienti" type="text"></textarea>
+                    </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="save()">Salva</button>
+            </div>
         </div>
     </BODY>
 </HTML>
