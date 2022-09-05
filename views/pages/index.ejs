@@ -3,19 +3,75 @@
         <SCRIPT>
             
             async function edit(codice) {
+                window.codice = codice;
                 document.getElementById("modal").style.display = "block"
                 document.querySelector(".modal-blur").style.display = "block"
                 let item = await fetch("/api?codice="+codice);
                 let objar = await item.json();
                 let obj = objar[0];
                 for(let field in obj){
-                    let selector = `form input[name='${field.toLowerCase()}']`;
+                    try{
+                        let selector = `form input[name='${field.toLowerCase()}']`;
+                        if (field=="INGREDIENTI")
+                            selector = `form textarea[name='${field.toLowerCase()}']`;
                     document.querySelector(selector).value = obj[field];
+                    }
+                    catch(error){
+                        console.log("problema con campo "+field);
+                    }
                 }
+                document.querySelector(`form input[name='codice']`).readonly = true;
+                document.querySelector(`form input[name='codice']`).disabled = true;
             }
             function closeModal(){
                 document.getElementById("modal").style.display = "none"
                 document.querySelector(".modal-blur").style.display = "none"
+            }
+            async function save(){
+                let item = await fetch("/api?codice="+window.codice);
+                let objar = await item.json();
+                let obj = objar[0];
+                try{
+                    let newobj = {};
+                    for(let field in obj){
+                        try{
+                            let selector = `form input[name='${field.toLowerCase()}']`;
+                            if (field=="INGREDIENTI")
+                                selector = `form textarea[name='${field.toLowerCase()}']`;
+                            let val = document.querySelector(selector).value;
+                            newobj[field.toLowerCase()] = val;
+                        }
+                        catch(error){
+                            console.log("problema con campo "+field);
+                        }
+                    }
+                    await fetch("/api?codice="+window.codice,{method:"POST",headers:[['Content-Type', 'application/json']],body:JSON.stringify(newobj)});
+                    closeModal();
+                }
+                catch(error){
+                    console.error(error);
+                }
+            }
+            async function nuovo(codice){
+                window.codice = codice;
+                document.getElementById("modal").style.display = "block"
+                document.querySelector(".modal-blur").style.display = "block"
+                document.querySelector(`form input[name='codice']`).readonly = false;
+                document.querySelector(`form input[name='codice']`).disabled = false;
+                let item = await fetch("/api?codice="+codice);
+                let objar = await item.json();
+                let obj = objar[0];
+                for(let field in obj){
+                    try{
+                        let selector = `form input[name='${field.toLowerCase()}']`;
+                        if (field=="INGREDIENTI")
+                            selector = `form textarea[name='${field.toLowerCase()}']`;
+                        document.querySelector(selector).value = "";
+                    }
+                    catch(error){
+                        console.log("problema con campo "+field);
+                    }
+                }
             }
         </SCRIPT>
     </HEAD>
@@ -25,7 +81,7 @@
             Articoli
         </h2>
         <div class="container">
-            <button style="float:right">New</button>
+            <button style="float:right" onclick="nuovo('<%=data[0].CODICE%>')">New</button>
             <table>
                 <thead>
                     <tr>
@@ -52,7 +108,10 @@
         <div id="modal" class="modal" style="display:none;">
             <div class="modal-header">
                 Titolo
-                <button class="modal-close" onclick="closeModal()">×</button>
+                <div style="float:right">
+                    <button onclick="save()">Salva</button>
+                    <button onclick="closeModal()">Annulla</button>
+                </div>
             </div>
             <div class="modal-body">
                 <form id="modal-form">

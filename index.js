@@ -127,7 +127,7 @@ async function saveData(body){
     let tipol= body.tipol || '';
     let num_etich= body.num_etich || '';
     let print_man= body.print_man || '';
-    let check= body.check || 0;
+    let check= body.check === "True" || 0;
     console.log(item.recordset);
     if (item.recordset.length === 0){
         ss = `INSERT INTO  DATA(CODICE,NOME,INGREDIENTI,DESCRIZIONE,ORIGINE,KJ,ENERGIA,GRASSI,GRASSI_SATURI,
@@ -139,7 +139,18 @@ async function saveData(body){
             )`
     }
     else {
-        ss = `UPDATE DATA SET 
+        ss = `
+        INSERT INTO DATA_HISTORY(Data,CODICE,NOME,INGREDIENTI,DESCRIZIONE,ORIGINE,KJ,ENERGIA,GRASSI,GRASSI_SATURI,
+          CARBOIDRATI,CARBOIDRATI_ZUCCHERI,FIBRA_ALIMENTARE,PROTEINE,SALE,SODIO,TMC,AVVISI,PESO,TXT,CPNP,
+          SOCIETA,DISTRUBUITO,STAMPANTE,DOC,BTW,FLAG_STAMPA_ETICHETTA,ORDINE,TIPOL,NUM_ETICH,PRINT_MAN,[CHECK])
+          SELECT GETDATE(),CODICE,NOME,INGREDIENTI,DESCRIZIONE,ORIGINE,KJ,ENERGIA,GRASSI,GRASSI_SATURI,
+          CARBOIDRATI,CARBOIDRATI_ZUCCHERI,FIBRA_ALIMENTARE,PROTEINE,SALE,SODIO,TMC,AVVISI,PESO,TXT,CPNP,
+          SOCIETA,DISTRUBUITO,STAMPANTE,DOC,BTW,FLAG_STAMPA_ETICHETTA,ORDINE,TIPOL,NUM_ETICH,PRINT_MAN,[CHECK]
+          FROM DATA
+          WHERE codice = '${codice}'
+
+          
+        UPDATE DATA SET 
         nome = '${nome}',
         ingredienti = '${ingredienti}',
         descrizione = '${descrizione}',
