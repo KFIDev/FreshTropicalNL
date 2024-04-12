@@ -1,0 +1,129 @@
+<HTML>
+    <HEAD><link rel="stylesheet" href="/index.css" type="text/css" >
+        <SCRIPT>
+            
+            async function edit(codice) {
+                window.id = codice;
+                document.getElementById("modal").style.display = "block"
+                document.getElementById("modal").style.opacity = 1
+                document.querySelector(".modal-blur").style.display = "block"
+                let item = await fetch("/api/allergeni?lingua="+codice);
+                let objar = await item.json();
+                let obj = objar[0];
+                document.querySelector(`form input[name='lingua']`).value = obj.lingua;
+                document.querySelector(`form textarea[name='allergeni']`).value = obj.ALLERGENI;
+                document.querySelector(`form textarea[name='eccezioni']`).value = obj.ECCEZIONI;
+
+                // for(let field in obj){
+                //     try{
+                //         let selector = `form input[name='${field.toLowerCase()}']`;
+                //         if (field=="INGREDIENTI")
+                //             selector = `form textarea[name='${field.toLowerCase()}']`;
+                //     document.querySelector(selector).value = obj[field];
+                //     }
+                //     catch(error){
+                //         console.log("problema con campo "+field);
+                //     }
+                // }
+            }
+            function closeModal(){
+                document.getElementById("modal").style.display = "none"
+                document.querySelector(".modal-blur").style.display = "none"
+            }
+            async function save(){
+                let item = await fetch("/api/allergeni?lingua="+window.id);
+                let objar = await item.json();
+                let obj = objar[0];
+                
+                let lingua = document.querySelector(`form input[name='lingua']`).value ;
+                let ingredienti = document.querySelector(`form textarea[name='allergeni']`).value;
+                let eccezioni = document.querySelector(`form textarea[name='eccezioni']`).value ;
+                newobj = {lingua,ingredienti,eccezioni};
+                await fetch("/api/allergeni?lingua="+window.id,{method:"POST",headers:[['Content-Type', 'application/json']],body:JSON.stringify(newobj)});
+            }
+            async function nuovo(codice){
+                window.codice = codice;
+                document.getElementById("modal").style.display = "block"
+                document.querySelector(".modal-blur").style.display = "block"
+                document.querySelector(`form input[name='codice']`).readonly = false;
+                document.querySelector(`form input[name='codice']`).disabled = false;
+                let item = await fetch("/api?codice="+codice);
+                let objar = await item.json();
+                let obj = objar[0];
+                for(let field in obj){
+                    try{
+                        let selector = `form input[name='${field.toLowerCase()}']`;
+                        if (field=="INGREDIENTI")
+                            selector = `form textarea[name='${field.toLowerCase()}']`;
+                        document.querySelector(selector).value = "";
+                    }
+                    catch(error){
+                        console.log("problema con campo "+field);
+                    }
+                }
+            }
+        </SCRIPT>
+    </HEAD>
+    <BODY>
+        <%- include('../menu.ejs'); %>
+        <h2 class="page-header">
+            Allergeni
+        </h2>
+        <div class="container">
+            <button style="float:right" onclick="nuovo('')">New</button>
+            <table>
+                <thead>
+                    <tr>
+                        <td>Lingua</td>
+                        <td>Allergeni</td>
+                        <td>Eccezioni</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (var i =0; i <allergeni.length;  i++ ) { %>
+                        <tr class="songitem">
+                            <% let item = allergeni[i] %>
+                            <td><%=item.lingua%></td>
+                            <td><%=item.ALLERGENI%></td>
+                            <td><%=item.ECCEZIONI%></td>
+                            <td style="margin:auto"><button onclick="edit('<%=item.lingua%>')">Edit</button><button>Delete</button></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <div  class="modal-blur" style="display:none;">
+            
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-header">
+                Titolo
+                <div style="float:right">
+                    <button onclick="save()">Salva</button>
+                    <button onclick="closeModal()">Annulla</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="modal-form">
+                            <div class="form-group">
+                                <label>Lingua</label>
+                                <input name = "lingua" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label>Allergeni</label>
+                                <textarea name = "allergeni" rows="8" type="text"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Eccezioni</label>
+                                <textarea name = "eccezioni" rows="8" type="text"></textarea>
+                            </div>
+                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="save()">Salva</button>
+            </div>
+        </div>
+    </BODY>
+</HTML>

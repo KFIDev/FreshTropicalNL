@@ -1,12 +1,30 @@
 <HTML>
     <HEAD><link rel="stylesheet" href="/index.css" type="text/css" >
         <SCRIPT>
-            
+            function onIngredientiChange(event){
+                //generaAnteprima(event.target.value);
+            }
+            function generaAnteprima(ingredienti){
+                ingredienti = ingredienti.replace("{\\rtf1\\fs8\\deff0{\\fonttbl{\\f0 Arial;}}","");
+                ingredienti = ingredienti.replace("\\f0\\fs20\\par}","");
+                while(true){
+                    let index = ingredienti.indexOf("{\\b\\ul");
+                    if (index<0)
+                        break;
+                    let index2 = ingredienti.indexOf("}");
+                    let allergene = ingredienti.substr(index+6,index2-index-6);
+                    ingredienti = ingredienti.substr(0,index) + `<strong>${allergene}</strong>`+ingredienti.substr(index2+1);
+
+                }
+
+                document.querySelector(`div[name='anteprima']`).innerHTML = ingredienti;
+            }
             async function edit(codice) {
                 window.codice = codice;
                 document.getElementById("modal").style.display = "block"
+                document.getElementById("modal").style.opacity = 1
                 document.querySelector(".modal-blur").style.display = "block"
-                let item = await fetch("/api?codice="+codice);
+                let item = await fetch("/api/articoli?codice="+codice);
                 let objar = await item.json();
                 let obj = objar[0];
                 for(let field in obj){
@@ -22,13 +40,15 @@
                 }
                 document.querySelector(`form input[name='codice']`).readonly = true;
                 document.querySelector(`form input[name='codice']`).disabled = true;
+                generaAnteprima(obj.Ingredienti_Allergeni);
             }
             function closeModal(){
+                document.getElementById("modal").style.opacity = 0
                 document.getElementById("modal").style.display = "none"
                 document.querySelector(".modal-blur").style.display = "none"
             }
             async function save(){
-                let item = await fetch("/api?codice="+window.codice);
+                let item = await fetch("/api/articoli?codice="+window.codice);
                 let objar = await item.json();
                 let obj = objar[0];
                 try{
@@ -45,7 +65,7 @@
                             console.log("problema con campo "+field);
                         }
                     }
-                    await fetch("/api?codice="+window.codice,{method:"POST",headers:[['Content-Type', 'application/json']],body:JSON.stringify(newobj)});
+                    await fetch("/api/articoli?codice="+window.codice,{method:"POST",headers:[['Content-Type', 'application/json']],body:JSON.stringify(newobj)});
                     closeModal();
                 }
                 catch(error){
@@ -55,10 +75,11 @@
             async function nuovo(codice){
                 window.codice = codice;
                 document.getElementById("modal").style.display = "block"
+                document.getElementById("modal").style.opacity = 1
                 document.querySelector(".modal-blur").style.display = "block"
                 document.querySelector(`form input[name='codice']`).readonly = false;
                 document.querySelector(`form input[name='codice']`).disabled = false;
-                let item = await fetch("/api?codice="+codice);
+                let item = await fetch("/api/articoli?codice="+codice);
                 let objar = await item.json();
                 let obj = objar[0];
                 for(let field in obj){
@@ -105,7 +126,7 @@
         <div  class="modal-blur" style="display:none;">
             
         </div>
-        <div id="modal" class="modal" style="display:none;">
+        <div id="modal" class="modal" >
             <div class="modal-header">
                 Titolo
                 <div style="float:right">
@@ -247,7 +268,11 @@
                     </div>
                     <div class="form-group">
                         <label>Ingredienti</label>
-                        <textarea rows="4" name = "ingredienti" type="text"></textarea>
+                        <textarea onkeydown="onIngredientiChange(event)" rows="4" name = "ingredienti" type="text"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Anteprima ingredienti</label>
+                        <div class="anteprima" name = "anteprima"></div>
                     </div>
                     
                 </form>
